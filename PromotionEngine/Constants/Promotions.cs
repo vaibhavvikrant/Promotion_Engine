@@ -1,5 +1,4 @@
-﻿using PromotionEngine.Constants;
-using PromotionEngine.Contracts;
+﻿using PromotionEngine.Contracts;
 using System.Collections.Generic;
 
 namespace PromotionEngine.Constants

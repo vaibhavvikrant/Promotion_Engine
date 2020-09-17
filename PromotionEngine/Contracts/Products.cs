@@ -1,6 +1,4 @@
-﻿using PromotionEngine.Contracts;
-
-namespace PromotionEngine.Constants
+﻿namespace PromotionEngine.Contracts
 {
     public class Products
     {

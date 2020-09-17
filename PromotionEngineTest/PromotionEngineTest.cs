@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using PromotionEngine.Contracts;
-using PromotionEngine.Constants;
 
 namespace PromotionEngineTest
 {
