@@ -7,28 +7,39 @@ using System.Linq;
 
 namespace PromotionEngine.Implementation
 {
-    public class FixedPricePromotionaPhase2 : IPromotion
+    public class FixedPricePromotionaType2 : IPromotion
     {
         public (decimal finalPrice, List<ProductToBuy> productsToBuy) ApplyPromotion(List<ProductToBuy> productsToBuy, decimal finalPrice)
         {
-            foreach (var fixedPromotion in Promotions.FixedPricePromotionsPhase2)
+            foreach (var fixedPromotion in Promotions.FixedPricePromotionsType2)
             {
-                var fixedPriceApplicableProducts = productsToBuy.Where(obj => obj.Product.Name == fixedPromotion.Product.Name);
-                if (fixedPriceApplicableProducts != null && fixedPriceApplicableProducts.Any())
+
+                //find all eleigible records in loop
+                var allProducts = fixedPromotion.Products;
+                var eligibleProducts = new List<ProductToBuy>();
+                foreach (var prod  in productsToBuy)
+                {
+                    if (allProducts.Any(obj => obj.Name == prod.Product.Name))
+                    {
+                        allProducts.Remove(prod.Product);
+                        eligibleProducts.Add(prod);
+                    }
+                }
+
+                if (allProducts == null || allProducts.Count==0)
                 {
                     // Calulate no of items in batch for discount
-                    var batchesOnDiscount = fixedPriceApplicableProducts.FirstOrDefault()?.count / fixedPromotion.PromoItemCount;
-                    if (batchesOnDiscount > 0)
-                    {
-                        finalPrice += batchesOnDiscount.Value * fixedPromotion.PromoPrice;
-                    }
-                    // Calulate no of items in batch for discount
-                    var itemsNotInDiscount = fixedPriceApplicableProducts.FirstOrDefault()?.count % fixedPromotion.PromoItemCount;
-                    if (itemsNotInDiscount > 0)
-                    {
-                        finalPrice += itemsNotInDiscount.Value * fixedPromotion.Product.Price;
-                    }
-                    productsToBuy.RemoveAll(obj => fixedPriceApplicableProducts.Select(obj => obj.Product.Name).Contains(obj.Product.Name));
+                    var batchesOnDiscount = eligibleProducts.GroupBy(obj => obj.Product).Select(obj=> new { obj.Key, count = obj.Count(), obj });
+                    var minBatch = batchesOnDiscount.OrderBy(obj => obj.count).FirstOrDefault();
+                    finalPrice += fixedPromotion.PromoPrice * minBatch.count;
+
+
+                    //// Calulate price of remaining items of eleible products
+                    eligibleProducts.ForEach(
+                       obj => finalPrice +=  obj.Product.Price * (obj.count - minBatch.count)
+                    );
+
+                    productsToBuy.RemoveAll(obj => eligibleProducts.Select(obj => obj.Product.Name).Contains(obj.Product.Name));
                 }
             }
             return (finalPrice, productsToBuy);

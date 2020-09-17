@@ -34,7 +34,8 @@ namespace PromotionEngine.Contracts
             get
             {
                 IPromotion fixedPricePromotion = new FixedPricePromotion();
-                return new List<IPromotion> { fixedPricePromotion };
+                IPromotion fixedPricePromotionType2 = new FixedPricePromotionaType2();
+                return new List<IPromotion> { fixedPricePromotion, fixedPricePromotionType2 };
             }
         }
     }

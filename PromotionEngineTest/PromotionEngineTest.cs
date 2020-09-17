@@ -13,7 +13,8 @@ namespace PromotionEngineTest
             var product = new ProductToBuy { Product = Products.ProductA, count = 5 };
             var product1 = new ProductToBuy { Product = Products.ProductB, count = 5 };
             var product2 = new ProductToBuy { Product = Products.ProductC, count = 1 };
-            var obj = new SKU(new List<ProductToBuy> { product, product1, product2 });
+            var product3 = new ProductToBuy { Product = Products.ProductD, count = 1 };
+            var obj = new SKU(new List<ProductToBuy> { product, product1, product2, product3 });
             var finalPrice = obj.PromotionalPrice;
             Assert.AreEqual(0, finalPrice);
         }
