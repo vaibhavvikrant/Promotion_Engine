@@ -1,5 +1,6 @@
 ﻿using PromotionEngine.Implementation;
 using PromotionEngine.Interface;
+using System;
 using System.Collections.Generic;
 
 namespace PromotionEngine.Contracts
@@ -12,14 +13,21 @@ namespace PromotionEngine.Contracts
         {
             get
             {
-                // All the classes implementing IPromotion, their Applypromotion method will be called from here.
-                foreach (IPromotion promotion in ApplyPromotion)
+                try
                 {
-                    var response= promotion.ApplyPromotion(ProductsToBuy, finalPrice);
-                    ProductsToBuy = response.productsToBuy;
-                    finalPrice = response.finalPrice;
+                    // All the classes implementing IPromotion, their Applypromotion method will be called from here.
+                    foreach (IPromotion promotion in ApplyPromotion)
+                    {
+                        var response = promotion.ApplyPromotion(ProductsToBuy, finalPrice);
+                        ProductsToBuy = response.productsToBuy;
+                        finalPrice = response.finalPrice;
+                    }
+                    finalPrice = ItemsWithoutDiscount.ApplyPromotion(ProductsToBuy, finalPrice);
                 }
-                finalPrice = ItemsWithoutDiscount.ApplyPromotion(ProductsToBuy, finalPrice);
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
                 return finalPrice;
             }
         }
