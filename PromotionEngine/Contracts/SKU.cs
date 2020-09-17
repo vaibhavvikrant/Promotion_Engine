@@ -6,7 +6,7 @@ namespace PromotionEngine.Contracts
     public class SKU
     {
         private readonly List<IPromotion> _appliedPromotion = new List<IPromotion>();
-        public string Id { get; set; }
+        public string Name { get; set; }
         public decimal OriginalPrice { get; set; }
 
         public decimal PromotionalPrice
@@ -14,12 +14,16 @@ namespace PromotionEngine.Contracts
             get 
             {
                 decimal promotionalPrice = OriginalPrice;
+                foreach (IPromotion promotion in _appliedPromotion)
+                {
+                    promotionalPrice = promotion.ApplyPromotion(promotionalPrice, OriginalItemCount);
+                }
                 return promotionalPrice;
             }
         }
-        public SKU(string id, decimal price)
+        public SKU(string name, decimal price)
         {
-            Id = id;
+            Name = name;
             OriginalPrice = price;
         }
 
