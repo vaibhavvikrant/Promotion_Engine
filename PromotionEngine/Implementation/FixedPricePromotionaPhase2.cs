@@ -4,15 +4,14 @@ using PromotionEngine.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace PromotionEngine.Implementation
 {
-    public class FixedPricePromotion : IPromotion
+    public class FixedPricePromotionaPhase2 : IPromotion
     {
         public (decimal finalPrice, List<ProductToBuy> productsToBuy) ApplyPromotion(List<ProductToBuy> productsToBuy, decimal finalPrice)
         {
-            foreach (var fixedPromotion in Promotions.FixedPricePromotions)
+            foreach (var fixedPromotion in Promotions.FixedPricePromotionsPhase2)
             {
                 var fixedPriceApplicableProducts = productsToBuy.Where(obj => obj.Product.Name == fixedPromotion.Product.Name);
                 if (fixedPriceApplicableProducts != null && fixedPriceApplicableProducts.Any())
@@ -33,7 +32,6 @@ namespace PromotionEngine.Implementation
                 }
             }
             return (finalPrice, productsToBuy);
-
         }
     }
 }
