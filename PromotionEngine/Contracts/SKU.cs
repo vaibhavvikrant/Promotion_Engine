@@ -5,26 +5,26 @@ namespace PromotionEngine.Contracts
 {
     public class SKU
     {
-        private readonly List<IPromotion> _appliedPromotion = new List<IPromotion>();
-        public string Name { get; set; }
-        public decimal OriginalPrice { get; set; }
-
+        public List<IPromotion> _appliedPromotion = new List<IPromotion>();
+        public decimal finalPrice { get; set; }
+        List<ProductToBuy> ProductsToBuy { get; set; }
         public decimal PromotionalPrice
         {
-            get 
+            get
             {
-                decimal promotionalPrice = OriginalPrice;
+                 
                 foreach (IPromotion promotion in _appliedPromotion)
                 {
-                    promotionalPrice = promotion.ApplyPromotion(promotionalPrice, OriginalItemCount);
+                    var response= promotion.ApplyPromotion(ProductsToBuy, finalPrice);
+                    ProductsToBuy = response.productsToBuy;
+                    finalPrice = response.finalPrice;
                 }
-                return promotionalPrice;
+                return finalPrice;
             }
         }
-        public SKU(string name, decimal price)
+        public SKU(List<ProductToBuy> productsToBuy)
         {
-            Name = name;
-            OriginalPrice = price;
+            ProductsToBuy = productsToBuy;
         }
 
         public List<IPromotion> ApplyPromotion

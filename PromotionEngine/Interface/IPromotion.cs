@@ -1,7 +1,10 @@
-﻿namespace PromotionEngine.Interface
+﻿using PromotionEngine.Contracts;
+using System.Collections.Generic;
+
+namespace PromotionEngine.Interface
 {
     public interface IPromotion
     {
-        decimal ApplyPromotion(decimal originalPrice, int originalItemCount);
+        (decimal finalPrice, List<ProductToBuy> productsToBuy) ApplyPromotion(List<ProductToBuy> productsToBuy, decimal finalPrice);
     }
 }

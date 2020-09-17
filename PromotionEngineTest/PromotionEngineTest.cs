@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using PromotionEngine;
 using PromotionEngine.Contracts;
+using PromotionEngine.Constants;
 
 namespace PromotionEngineTest
 {
@@ -12,7 +11,9 @@ namespace PromotionEngineTest
         [Test]
         public void FixedPriceTest()
         {
-            var product = new SKU()
+            var product = new ProductToBuy { Product = Products.ProductA, count = 5 };
+            SKU obj = new SKU(new List<ProductToBuy> { product });
+            var finalPrice = obj.PromotionalPrice;
 
         }
     }

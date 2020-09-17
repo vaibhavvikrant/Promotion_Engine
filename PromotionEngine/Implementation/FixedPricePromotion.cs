@@ -1,4 +1,10 @@
-﻿using PromotionEngine.Interface;
+﻿using PromotionEngine.Constants;
+using PromotionEngine.Contracts;
+using PromotionEngine.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace PromotionEngine.Implementation
 {
@@ -6,28 +12,35 @@ namespace PromotionEngine.Implementation
     {
         public decimal PromoPrice { get; set; }
         public decimal PromoItemCount { get; set; }
-        public FixedPricePromotion(decimal promoPrice, int itemCount)
+        public Product Product { get; set; }
+        public FixedPricePromotion(Product product, decimal promoPrice, int itemCount)
         {
+            Product = product;
             PromoPrice = promoPrice;
-            PromoItemCount = PromoItemCount;
+            PromoItemCount = itemCount;
         }
        
-        public decimal ApplyPromotion(decimal originalPrice, int originalItemCount)
+        public (decimal finalPrice, List<ProductToBuy> productsToBuy) ApplyPromotion(List<ProductToBuy> productsToBuy, decimal finalPrice)
         {
-            decimal finalPrice=0;
-            // Calulate no of items in batch for discount
-            var batchesOnDiscount = originalItemCount /  PromoItemCount;
-            if (batchesOnDiscount > 0)
+            foreach (var fixedPromotion in Promotions.FixedPricePromotions)
             {
-                finalPrice = batchesOnDiscount * PromoPrice;
+                var fixedPriceApplicableProducts = productsToBuy.Where(obj => obj.Product.Name == fixedPromotion.Product.Name);
+                // Calulate no of items in batch for discount
+                var batchesOnDiscount = fixedPriceApplicableProducts.Count() / fixedPromotion.PromoItemCount;
+                if (batchesOnDiscount > 0)
+                {
+                    finalPrice = batchesOnDiscount * fixedPromotion.PromoPrice;
+                }
+                // Calulate no of items in batch for discount
+                var itemsNotInDiscount = fixedPromotion.Product.Price % PromoItemCount;
+                if (itemsNotInDiscount > 0)
+                {
+                    finalPrice += batchesOnDiscount * PromoPrice;
+                }
+                productsToBuy.RemoveAll(obj => fixedPriceApplicableProducts.Select(obj => obj.Product.Name).Contains(obj.Product.Name));
             }
-            // Calulate no of items in batch for discount
-            var itemsNotInDiscount = originalItemCount % PromoItemCount;
-            if (itemsNotInDiscount > 0)
-            {
-                finalPrice += batchesOnDiscount * PromoPrice;
-            }
-            return finalPrice;
+            return (finalPrice, productsToBuy);
+
         }
     }
 }
