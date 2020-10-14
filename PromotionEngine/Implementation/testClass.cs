@@ -14,8 +14,8 @@ namespace PromotionEngine.Implementation
                 int.TryParse(obj, out var intVal);
                 return intVal;
             }
-
             var splittedLines = lines.Select(obj => obj.Split(','));
+            splittedLines.ToList().ForEach(obj => obj.ToList().ForEach(o=> o.Trim()));
             var discountedRows = splittedLines.GroupBy(obj => obj[3]).SelectMany(obj =>
             obj.Where(obj1 =>
                             obj1[3] == obj.Key &&
