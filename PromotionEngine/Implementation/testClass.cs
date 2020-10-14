@@ -27,10 +27,10 @@ namespace PromotionEngine.Implementation
             return finalRows;
         }
         IF(not EXISTS (SELECT*
-                   FROM INFORMATION_SCHEMA.TABLES
-                   WHERE TABLE_SCHEMA = 'dbo'
-  
-                   AND TABLE_NAME = 'Building'))
+                  FROM INFORMATION_SCHEMA.TABLES
+                  WHERE TABLE_SCHEMA = 'dbo'
+ 
+                  AND TABLE_NAME = 'Building'))
 begin
 create table Building(BuildingId int not null, Address Char(20))
 end
@@ -43,10 +43,10 @@ Create table Apartment(AptId int not null, BuildingId Int not null, AptNumber Ch
 
 end
 select
-max(b.Address) 'Address',
-case when max(a.AptId) is not null  then max(a.MonthyRent) else -1 end 'HighestRent'
+max(b.Address)
 from
 building b left join Apartment a on b.BuildingId=a.BuildingId
 group by b.BuildingId
+having avg(MonthyRent)<50000
     }
 }
