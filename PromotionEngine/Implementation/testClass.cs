@@ -27,34 +27,26 @@ namespace PromotionEngine.Implementation
             return finalRows;
         }
         IF(not EXISTS (SELECT*
-                 FROM INFORMATION_SCHEMA.TABLES
-                 WHERE TABLE_SCHEMA = 'dbo'
-                 AND TABLE_NAME = 'ExamScore'))
-BEGIN
-    create table dbo.ExamScore(CandidateId Integer not null, paperid integer not null, Score Integer not null)
-END
+                   FROM INFORMATION_SCHEMA.TABLES
+                   WHERE TABLE_SCHEMA = 'dbo'
+  
+                   AND TABLE_NAME = 'Building'))
+begin
+create table Building(BuildingId int not null, Address Char(20))
+end
 IF(not EXISTS (SELECT*
                  FROM INFORMATION_SCHEMA.TABLES
                  WHERE TABLE_SCHEMA = 'dbo'
-                 AND TABLE_NAME = 'Paper'))
+                 AND TABLE_NAME = 'Apartment'))
 begin
-    create table dbo.Paper(Paperid integer not null, PaperName Char(20) not null)
+Create table Apartment(AptId int not null, BuildingId Int not null, AptNumber Char(40) not null, MonthyRent Int not null, Area int not null)
+
 end
-
-IF(not EXISTS (SELECT*
-                 FROM INFORMATION_SCHEMA.TABLES
-                 WHERE TABLE_SCHEMA = 'dbo'
-                 AND TABLE_NAME = 'Candidate'))
-begin
-    create table dbo.Candidate(CandidateId integer not null, CandidateName char(20) not null)
-end
-
-
-select avg(pp.score) from(
-select avg(score) as score , paperid p
-from ExamScore
-where PaperId<100
-group by PaperId)
- pp
+select
+max(b.Address) 'Address',
+case when max(a.AptId) is not null  then max(a.MonthyRent) else -1 end 'HighestRent'
+from
+building b left join Apartment a on b.BuildingId=a.BuildingId
+group by b.BuildingId
     }
 }
